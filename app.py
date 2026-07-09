@@ -10,15 +10,16 @@ class CalculadoraSaida(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("⏰ Calculadora de Saída")
-        self.geometry("420x420")
+        self.title("Calculadora de Saída")
+        self.geometry("360x420")
         self.resizable(False, False)
+        ctk.set_appearance_mode("dark")
 
         ctk.CTkLabel(
             self,
             text="Calculadora de Saída",
             font=("Segoe UI", 24, "bold")
-        ).pack(pady=20)
+        ).pack(pady=5)
 
         frame = ctk.CTkFrame(self)
         frame.pack(fill="both", padx=20)
@@ -86,7 +87,7 @@ class CalculadoraSaida(ctk.CTk):
             )
 
             self.lbl_saida.configure(
-                text=f"🏁 Saída prevista: {saida.strftime('%H:%M')}"
+                text=f"Saída prevista: {saida.strftime('%H:%M')}"
             )
 
             if restante.total_seconds() > 0:
@@ -98,7 +99,7 @@ class CalculadoraSaida(ctk.CTk):
                 segundos = total % 60
 
                 self.lbl_restante.configure(
-                    text=f"⏳ Faltam {horas:02}:{minutos:02}:{segundos:02}"
+                    text=f"Faltam {horas:02}:{minutos:02}:{segundos:02}"
                 )
 
             else:
@@ -110,7 +111,7 @@ class CalculadoraSaida(ctk.CTk):
                 segundos = extra % 60
 
                 self.lbl_restante.configure(
-                    text=f"🟢 Hora extra: {horas:02}:{minutos:02}:{segundos:02}"
+                    text=f"Hora extra: {horas:02}:{minutos:02}:{segundos:02}"
                 )
 
         except:
