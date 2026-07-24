@@ -1,6 +1,9 @@
 package infra
 
-import "github.com/4mti/ponto/domain/core"
+import (
+	"github.com/4mti/ponto/domain/core"
+	"github.com/4mti/ponto/infra/loader"
+)
 
 func NewDrawer() core.Drawer {
 	return nil
@@ -11,5 +14,5 @@ func NewEventListener() core.EventListener {
 }
 
 func NewConfigLoader() core.ConfigLoader {
-	return nil
+	return &loader.ConfigLoaderImpl{}
 }
