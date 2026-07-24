@@ -1,23 +1,21 @@
 package model
 
-type LunchPeriods struct {
-	Start int64
-	End   int64
-}
-
 type GlobalState struct {
-	StartPeriod  int64
-	LunchPeriods []*LunchPeriods
+	StartTime    int64
 	JourneyHours int
+
+	CurrentClock *Clock
+	Clocks       []*Clock
 
 	Config
 }
 
-func NewGlobalState(startPeriod int64, journeyHours int, lunchPeriods []*LunchPeriods, config *Config) *GlobalState {
+func NewGlobalState(startPeriod int64, journeyHours int, clocks []*Clock, config *Config) *GlobalState {
 	return &GlobalState{
-		StartPeriod:  startPeriod,
-		LunchPeriods: lunchPeriods,
+		StartTime:    startPeriod,
 		JourneyHours: journeyHours,
+		Clocks:       clocks,
+		CurrentClock: nil,
 		Config:       *config,
 	}
 }

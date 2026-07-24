@@ -24,6 +24,8 @@ type Config struct {
 	OverlayColor      int
 	IsBorderEnabled   bool
 	BackgroundOpacity int
+	JourneyHours      int
+	StartTime         int64
 }
 
 func (config *Config) Validate() bool {

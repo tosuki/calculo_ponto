@@ -4,10 +4,9 @@ import "github.com/4mti/ponto/domain/model"
 
 type Drawer interface {
 	DrawOverlayClock(
-		time, timeLeft string,
-		overtimeMode bool,
-		mode int,
+		str string,
 		position model.OverlayPosition,
+		color model.OverlayColor,
 	) error
 
 	RemoveOverlayClock() error
