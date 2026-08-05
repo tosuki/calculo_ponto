@@ -19,13 +19,13 @@ type OverlayPosition = int
 type OverlayColor = int
 
 type Config struct {
-	OverlayEnabled    bool
-	OverlayPosition   int
-	OverlayColor      int
-	IsBorderEnabled   bool
-	BackgroundOpacity int
-	JourneyHours      int
-	StartTime         int64
+	OverlayEnabled    bool  `json:"overlay_enabled"`
+	OverlayPosition   int   `json:"overlay_position"`
+	OverlayColor      int   `json:"overlay_color"`
+	IsBorderEnabled   bool  `json:"is_border_enabled"`
+	BackgroundOpacity int   `json:"background_opacity"`
+	JourneyHours      int   `json:"journey_hours"`
+	StartTime         int64 `json:"start_time"`
 }
 
 func (config *Config) Validate() bool {

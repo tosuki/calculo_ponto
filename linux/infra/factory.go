@@ -2,15 +2,17 @@ package infra
 
 import (
 	"github.com/4mti/ponto/domain/core"
+	"github.com/4mti/ponto/infra/drawer"
+	"github.com/4mti/ponto/infra/event"
 	"github.com/4mti/ponto/infra/loader"
 )
 
-func NewDrawer() core.Drawer {
-	return nil
+func NewOverlayDrawer(cfg core.ConfigManager) core.Drawer {
+	return drawer.NewOverlayDrawer(cfg)
 }
 
 func NewEventListener() core.EventListener {
-	return nil
+	return event.NewEventListener()
 }
 
 func NewConfigLoader() core.ConfigLoader {

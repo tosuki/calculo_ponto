@@ -25,7 +25,7 @@ type ConfigManager interface {
 	AddClockOut(time int64, description string) error
 
 	GetCurrentClock() *model.Clock
-
+	GetWindowSize() (int, int)
 	GetClocks() []*model.Clock
 }
 
@@ -114,6 +114,10 @@ func (this *ConfigManagerImpl) AddClockOut(time int64, description string) error
 	return this.refresh()
 }
 
+func (this *ConfigManagerImpl) GetClocks() []*model.Clock {
+	return this.state.Clocks
+}
+
 func (this *ConfigManagerImpl) GetCurrentClock() *model.Clock {
 	return this.state.CurrentClock
 }
@@ -160,6 +164,17 @@ func (this *ConfigManagerImpl) SetOverlayColor(color model.OverlayColor) error {
 	return this.refresh()
 }
 
+func (this *ConfigManagerImpl) GetWindowSize() (int, int) {
+	return 400, 300
+}
+
 func (this *ConfigManagerImpl) GetOverlayColor() model.OverlayColor {
 	return this.state.OverlayColor
+}
+
+func NewConfigManager(cfgLoader ConfigLoader, eventListener EventListener) ConfigManager {
+	return &ConfigManagerImpl{
+		configLoader:  cfgLoader,
+		eventListener: eventListener,
+	}
 }

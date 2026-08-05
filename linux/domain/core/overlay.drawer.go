@@ -8,6 +8,6 @@ type Drawer interface {
 		position model.OverlayPosition,
 		color model.OverlayColor,
 	) error
-
 	RemoveOverlayClock() error
+	Start() error
 }
