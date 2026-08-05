@@ -14,7 +14,11 @@ import (
 type ConfigLoaderImpl struct {
 }
 
-func (this *ConfigLoaderImpl) LoadConfig(pathName string) (*model.Config, error) {
+func (this *ConfigLoaderImpl) CreateConfigFile(pathName string, data model.Config) error {
+	return nil
+}
+
+func (this *ConfigLoaderImpl) GetConfigDirectory(pathName string) string {
 	xdgConfigDir, err := os.UserConfigDir()
 
 	if err != nil {
@@ -28,7 +32,11 @@ func (this *ConfigLoaderImpl) LoadConfig(pathName string) (*model.Config, error)
 		log.Fatalf("Não foi carregar a pasta de configuração: %s", err)
 	}
 
-	configPath := filepath.Join(configDir, pathName)
+	return filepath.Join(configDir, pathName)
+}
+
+func (this *ConfigLoaderImpl) LoadConfig(pathName string) (*model.Config, error) {
+	configPath := this.GetConfigDirectory(pathName)
 	file, err := os.OpenFile(configPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
 
 	if err != nil {
@@ -77,6 +85,20 @@ func (this *ConfigLoaderImpl) LoadConfigOrElse(pathName string, orElse *model.Co
 	return config
 }
 
-func (this *ConfigLoaderImpl) SaveConfig(config *model.Config) error {
+func (this *ConfigLoaderImpl) SaveConfig(config *model.Config, pathName string) error {
+	configDir := this.GetConfigDirectory(pathName)
+
+	json, err := json.Marshal(config)
+
+	if err != nil {
+		log.Fatalf("Não foi possivel fazer o enconding da struct Config pra json: %s\n", err.Error())
+	}
+
+	configFilePath := filepath.Join(configDir, pathName)
+
+	if err := os.WriteFile(configFilePath, json, 0666); err != nil {
+		log.Fatalf("Não foi possivel salvar a configuração em %s devido a: %s", configFilePath, err.Error())
+	}
+
 	return nil
 }
