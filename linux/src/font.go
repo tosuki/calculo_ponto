@@ -67,6 +67,9 @@ func (nf *NumberFont) DrawText(
 	row int,
 	color *NumberColor,
 ) error {
+	x += 1
+	y += 1
+
 	for i, char := range text {
 		img := nf.getCharFromImage(char, row)
 
@@ -74,14 +77,25 @@ func (nf *NumberFont) DrawText(
 			continue
 		}
 
-		op := &ebiten.DrawImageOptions{}
+		charX := x + float64(i*cw)
 
+		// 1. Draw outline (black) in 4 directions (left, right, up, down)
+		offsets := [][2]float64{
+			{-1, 0}, {1, 0}, {0, -1}, {0, 1},
+		}
+		for _, offset := range offsets {
+			opOutline := &ebiten.DrawImageOptions{}
+			opOutline.ColorScale.Scale(0, 0, 0, 1) // Black
+			opOutline.GeoM.Translate(charX+offset[0], y+offset[1])
+			screen.DrawImage(img, opOutline)
+		}
+
+		// 2. Draw main character on top
+		op := &ebiten.DrawImageOptions{}
 		if color != nil {
 			op.ColorScale.Scale(color.red, color.green, color.blue, 1.0)
 		}
-
-		op.GeoM.Translate(x+float64(i*cw), y)
-
+		op.GeoM.Translate(charX, y)
 		screen.DrawImage(img, op)
 	}
 
@@ -91,8 +105,8 @@ func (nf *NumberFont) DrawText(
 func (nf *NumberFont) Measure(text string) (tw, th int) {
 	strLen := len(text)
 
-	tw = cw * strLen
-	th = ch
+	tw = cw*strLen + 2
+	th = ch + 2
 
 	return
 }

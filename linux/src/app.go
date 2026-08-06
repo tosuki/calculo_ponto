@@ -13,6 +13,9 @@ type App struct {
 	timer       *Timer
 	pausedColor *NumberColor
 
+	isDecorationEnabled       bool
+	isMousePassthroughEnabled bool
+
 	tick int
 }
 
@@ -27,6 +30,19 @@ func (app *App) Update() error {
 		} else {
 			app.timer.Pause()
 		}
+	}
+
+	if inpututil.IsKeyJustPressed(ebiten.KeyF6) {
+		app.isDecorationEnabled = !app.isDecorationEnabled
+		fmt.Printf("F6 Pressionado, mouse passthrough alterado pra %t\n", app.isMousePassthroughEnabled)
+		ebiten.SetWindowDecorated(app.isDecorationEnabled)
+	}
+
+	if inpututil.IsKeyJustPressed(ebiten.KeyF7) {
+		app.isMousePassthroughEnabled = !app.isMousePassthroughEnabled
+
+		fmt.Printf("F7 pressionado, mouse passthrough alterado pra %t\n", app.isMousePassthroughEnabled)
+		ebiten.SetWindowMousePassthrough(app.isMousePassthroughEnabled)
 	}
 
 	return nil
@@ -51,16 +67,29 @@ func (app *App) Layout(ow, oh int) (int, int) {
 }
 
 func RunApp() error {
+	font := NewNumberFont("assets/digits.png")
+	timer := NewTimer(TimerModeRegressive, time.Now(), time.Hour*6)
+
 	app := &App{
-		font:  NewNumberFont("assets/digits.png"),
-		timer: NewTimer(TimerModeRegressive, time.Now(), time.Hour*6),
+		font:  font,
+		timer: timer,
 
 		pausedColor: &NumberColor{
 			red:   100,
 			green: 0,
 			blue:  0,
 		},
+
+		isDecorationEnabled:       true,
+		isMousePassthroughEnabled: false,
 	}
 
-	return ebiten.RunGame(app)
+	_, th := font.Measure(timer.GetOutput())
+	ebiten.SetWindowSize(600, th)
+	ebiten.SetWindowDecorated(true) // Sem bordas de janela
+	ebiten.SetWindowFloating(true)  // ALWAYS ON TOP!
+
+	return ebiten.RunGameWithOptions(app, &ebiten.RunGameOptions{
+		ScreenTransparent: true,
+	})
 }
