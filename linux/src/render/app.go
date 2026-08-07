@@ -9,14 +9,10 @@ import (
 )
 
 type App struct {
-	font        *NumberFont
-	timer       *core.Timer
-	pausedColor *NumberColor
-
-	isDecorationEnabled       bool
-	isMousePassthroughEnabled bool
-
-	tick int
+	font  *NumberFont
+	timer *core.Timer
+	cfg   *core.Config
+	tick  int
 }
 
 func (app *App) Update() error {
@@ -33,16 +29,14 @@ func (app *App) Update() error {
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyF6) {
-		app.isDecorationEnabled = !app.isDecorationEnabled
-		fmt.Printf("F6 Pressionado, mouse passthrough alterado pra %t\n", app.isMousePassthroughEnabled)
-		ebiten.SetWindowDecorated(app.isDecorationEnabled)
+		app.cfg.SetWindowDecorated(!app.cfg.IsWindowDecorated())
+		fmt.Printf("F6 Pressionado, mouse passthrough alterado pra %t\n", app.cfg.IsWindowDecorated())
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyF7) {
-		app.isMousePassthroughEnabled = !app.isMousePassthroughEnabled
-
-		fmt.Printf("F7 pressionado, mouse passthrough alterado pra %t\n", app.isMousePassthroughEnabled)
-		ebiten.SetWindowMousePassthrough(app.isMousePassthroughEnabled)
+		app.cfg.SetMousePassthrough(!app.cfg.IsMousePassthroughEnabled())
+		fmt.Printf("F7 pressionado, mouse passthrough alterado pra %t\n", app.cfg.IsMousePassthroughEnabled())
+		ebiten.SetWindowMousePassthrough(app.cfg.IsMousePassthroughEnabled())
 	}
 
 	return nil
@@ -53,7 +47,7 @@ func (app *App) Draw(screen *ebiten.Image) {
 	text := app.timer.GetOutput()
 
 	if app.timer.IsPaused {
-		app.font.DrawText(text, screen, 0, 0, row, app.pausedColor)
+		app.font.DrawText(text, screen, 0, 0, row, app.cfg.GetPausedColor())
 	} else {
 		app.font.DrawText(text, screen, 0, 0, row, nil)
 	}
@@ -72,21 +66,14 @@ func RunApp(timer *core.Timer, config *core.Config) error {
 	app := &App{
 		font:  font,
 		timer: timer,
-
-		pausedColor: &NumberColor{
-			red:   100,
-			green: 0,
-			blue:  0,
-		},
-
-		isDecorationEnabled:       true,
-		isMousePassthroughEnabled: false,
+		cfg:   config,
 	}
 
 	_, th := font.Measure(timer.GetOutput())
+
+	config.SetWindowDecorated(true)
 	ebiten.SetWindowSize(600, th)
-	ebiten.SetWindowDecorated(true) // Sem bordas de janela
-	ebiten.SetWindowFloating(true)  // ALWAYS ON TOP!
+	ebiten.SetWindowFloating(true)
 
 	if err := ebiten.RunGameWithOptions(app, &ebiten.RunGameOptions{
 		ScreenTransparent: true,

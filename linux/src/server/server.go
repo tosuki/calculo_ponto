@@ -44,6 +44,17 @@ func StartServer(timer *core.Timer, config *core.Config) error {
 			return
 		}
 
+		if body.MousePassthrough != nil {
+			config.SetMousePassthrough(*body.MousePassthrough)
+		}
+
+		if body.WindowDecorated != nil {
+			config.SetWindowDecorated(*body.WindowDecorated)
+		}
+
+		if body.PausedColor != nil {
+			config.SetPausedColor(body.PausedColor)
+		}
 	})
 
 	router.PUT("/overlay/position", func(ctx *gin.Context) {
@@ -54,7 +65,7 @@ func StartServer(timer *core.Timer, config *core.Config) error {
 			return
 		}
 
-		config.SetPosition(body.X, body.Y)
+		config.SetPosition(*body.X, *body.Y)
 		wx, wy := config.GetPosition()
 
 		ctx.JSON(200, gin.H{

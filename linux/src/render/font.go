@@ -4,18 +4,13 @@ import (
 	"image"
 	"log"
 
+	"github.com/4mti/ponto/src/core"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 type NumberFont struct {
 	sheet *ebiten.Image
-}
-
-type NumberColor struct {
-	red   float32
-	green float32
-	blue  float32
 }
 
 /**
@@ -65,7 +60,7 @@ func (nf *NumberFont) DrawText(
 	screen *ebiten.Image,
 	x, y float64,
 	row int,
-	color *NumberColor,
+	color *core.RGBColor,
 ) error {
 	x += 1
 	y += 1
@@ -93,7 +88,7 @@ func (nf *NumberFont) DrawText(
 		// 2. Draw main character on top
 		op := &ebiten.DrawImageOptions{}
 		if color != nil {
-			op.ColorScale.Scale(color.red, color.green, color.blue, 1.0)
+			op.ColorScale.Scale(color.Red, color.Green, color.Blue, 1.0)
 		}
 		op.GeoM.Translate(charX, y)
 		screen.DrawImage(img, op)

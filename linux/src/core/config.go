@@ -5,10 +5,10 @@ import (
 )
 
 type Config struct {
-	Px int
-	Py int
+	px int
+	py int
 
-	PausedColor interface{}
+	pausedColor *RGBColor
 }
 
 type MonitorMetadata struct {
@@ -18,14 +18,30 @@ type MonitorMetadata struct {
 }
 
 func (c *Config) GetPosition() (int, int) {
-	return c.Px, c.Py
+	return c.px, c.py
 }
 
 func (c *Config) SetPosition(x, y int) {
-	c.Px = x
-	c.Py = y
+	c.px = x
+	c.py = y
 
-	ebiten.SetWindowPosition(c.Px, c.Py)
+	ebiten.SetWindowPosition(c.px, c.py)
+}
+
+func (c *Config) SetWindowDecorated(value bool) {
+	ebiten.SetWindowDecorated(value)
+}
+
+func (c *Config) IsWindowDecorated() bool {
+	return ebiten.IsWindowDecorated()
+}
+
+func (c *Config) SetMousePassthrough(value bool) {
+	ebiten.SetWindowMousePassthrough(value)
+}
+
+func (c *Config) IsMousePassthroughEnabled() bool {
+	return ebiten.IsWindowMousePassthrough()
 }
 
 func (c *Config) GetMonitorDimensions() MonitorMetadata {
@@ -41,9 +57,14 @@ func (c *Config) GetMonitorDimensions() MonitorMetadata {
 	}
 }
 
+func (c *Config) GetPausedColor() *RGBColor {
+	return c.pausedColor
+}
+
+func (c *Config) SetPausedColor(color *RGBColor) {
+	c.pausedColor = color
+}
+
 func NewConfig() *Config {
-	return &Config{
-		Px: 0,
-		Py: 0,
-	}
+	return &Config{}
 }
