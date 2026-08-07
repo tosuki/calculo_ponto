@@ -1,4 +1,4 @@
-package src
+package render
 
 import (
 	"image"

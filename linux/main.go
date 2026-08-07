@@ -3,5 +3,5 @@ package main
 import "github.com/4mti/ponto/src"
 
 func main() {
-	src.RunApp()
+	src.Start()
 }

@@ -36,8 +36,31 @@ func StartServer(timer *core.Timer, config *core.Config) error {
 		})
 	})
 
-	router.POST("/monitor/position", func(ctx *gin.Context) {
+	router.PUT("/overlay/config", func(ctx *gin.Context) {
+		var body DTOSetOverlayConfig
 
+		if err := ctx.ShouldBindBodyWithJSON(&body); err != nil || !body.Validate() {
+			ctx.Status(400)
+			return
+		}
+
+	})
+
+	router.PUT("/overlay/position", func(ctx *gin.Context) {
+		var body DTOSetWindowPosition
+
+		if err := ctx.ShouldBindBodyWithJSON(&body); err != nil || !body.Validate() {
+			ctx.Status(400)
+			return
+		}
+
+		config.SetPosition(body.X, body.Y)
+		wx, wy := config.GetPosition()
+
+		ctx.JSON(200, gin.H{
+			"x": wx,
+			"y": wy,
+		})
 	})
 
 	router.Run()

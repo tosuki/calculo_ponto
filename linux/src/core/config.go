@@ -1,12 +1,14 @@
 package core
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 type Config struct {
 	Px int
 	Py int
-	Sw int
-	Sy int
+
+	PausedColor interface{}
 }
 
 type MonitorMetadata struct {
@@ -22,6 +24,8 @@ func (c *Config) GetPosition() (int, int) {
 func (c *Config) SetPosition(x, y int) {
 	c.Px = x
 	c.Py = y
+
+	ebiten.SetWindowPosition(c.Px, c.Py)
 }
 
 func (c *Config) GetMonitorDimensions() MonitorMetadata {
