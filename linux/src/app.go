@@ -4,13 +4,15 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/4mti/ponto/src/core"
+	"github.com/4mti/ponto/src/server"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type App struct {
 	font        *NumberFont
-	timer       *Timer
+	timer       *core.Timer
 	pausedColor *NumberColor
 
 	isDecorationEnabled       bool
@@ -68,7 +70,8 @@ func (app *App) Layout(ow, oh int) (int, int) {
 
 func RunApp() error {
 	font := NewNumberFont("assets/digits.png")
-	timer := NewTimer(TimerModeRegressive, time.Now(), time.Hour*6)
+	timer := core.NewTimer(core.TimerModeRegressive, time.Now(), time.Hour*6)
+	config := core.NewConfig()
 
 	app := &App{
 		font:  font,
@@ -84,12 +87,18 @@ func RunApp() error {
 		isMousePassthroughEnabled: false,
 	}
 
+	go server.StartServer(timer, config)
+
 	_, th := font.Measure(timer.GetOutput())
 	ebiten.SetWindowSize(600, th)
 	ebiten.SetWindowDecorated(true) // Sem bordas de janela
 	ebiten.SetWindowFloating(true)  // ALWAYS ON TOP!
 
-	return ebiten.RunGameWithOptions(app, &ebiten.RunGameOptions{
+	if err := ebiten.RunGameWithOptions(app, &ebiten.RunGameOptions{
 		ScreenTransparent: true,
-	})
+	}); err != nil {
+		return err
+	}
+
+	return nil
 }
