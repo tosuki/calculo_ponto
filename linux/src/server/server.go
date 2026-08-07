@@ -2,31 +2,28 @@ package server
 
 import (
 	"github.com/4mti/ponto/src/core"
+	"github.com/4mti/ponto/src/server/router"
 	"github.com/gin-gonic/gin"
 )
 
 func StartServer(timer *core.Timer, config *core.Config) error {
-	router := gin.Default()
+	r := gin.Default()
 
-	router.GET("/", func(ctx *gin.Context) {
+	r.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
 
-	router.GET("/toggle", func(ctx *gin.Context) {
-		if timer.IsPaused {
-			timer.Resume()
-		} else {
-			timer.Pause()
-		}
+	if err := router.RegisterTimerRoutes(timer, config, r.Group("/timer")); err != nil {
+		return err
+	}
 
-		ctx.JSON(200, gin.H{
-			"is_paused": timer.IsPaused,
-		})
-	})
+	if err := router.RegisterOverlayRoutes(config, r.Group("/overlay")); err != nil {
+		return err
+	}
 
-	router.GET("/monitor", func(ctx *gin.Context) {
+	r.GET("/monitor", func(ctx *gin.Context) {
 		monitor := config.GetMonitorDimensions()
 
 		ctx.JSON(200, gin.H{
@@ -35,46 +32,7 @@ func StartServer(timer *core.Timer, config *core.Config) error {
 			"width":  monitor.Width,
 		})
 	})
-
-	router.PUT("/overlay/config", func(ctx *gin.Context) {
-		var body DTOSetOverlayConfig
-
-		if err := ctx.ShouldBindBodyWithJSON(&body); err != nil || !body.Validate() {
-			ctx.Status(400)
-			return
-		}
-
-		if body.MousePassthrough != nil {
-			config.SetMousePassthrough(*body.MousePassthrough)
-		}
-
-		if body.WindowDecorated != nil {
-			config.SetWindowDecorated(*body.WindowDecorated)
-		}
-
-		if body.PausedColor != nil {
-			config.SetPausedColor(body.PausedColor)
-		}
-	})
-
-	router.PUT("/overlay/position", func(ctx *gin.Context) {
-		var body DTOSetWindowPosition
-
-		if err := ctx.ShouldBindBodyWithJSON(&body); err != nil || !body.Validate() {
-			ctx.Status(400)
-			return
-		}
-
-		config.SetPosition(*body.X, *body.Y)
-		wx, wy := config.GetPosition()
-
-		ctx.JSON(200, gin.H{
-			"x": wx,
-			"y": wy,
-		})
-	})
-
-	router.Run()
+	r.Run()
 
 	return nil
 }

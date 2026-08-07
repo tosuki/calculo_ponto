@@ -1,4 +1,4 @@
-package server
+package binding
 
 import (
 	"github.com/4mti/ponto/src/core"
