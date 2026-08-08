@@ -7,9 +7,8 @@ import (
 
 func RunCli() error {
 	rootCmd := &cobra.Command{
-		Use:   "app",
-		Short: "sla",
-		Long:  "akdopawkd",
+		Use:   "ponto",
+		Short: "Um aplicativo pra facilitar a vida de trabalhadores com horas pra pagar.",
 		Run: func(cmd *cobra.Command, args []string) {
 			cmd.Help()
 		},

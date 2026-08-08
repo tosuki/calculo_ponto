@@ -15,6 +15,8 @@ func RegisterTimerRoutes(timer *core.Timer, config *core.Config, r *gin.RouterGr
 		} else {
 			timer.Pause()
 		}
+
+		ctx.Status(200)
 	})
 
 	r.PATCH("/config", func(ctx *gin.Context) {
