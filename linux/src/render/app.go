@@ -72,6 +72,11 @@ func RunApp(timer *core.Timer, config *core.Config) error {
 	_, th := font.Measure(timer.GetOutput())
 
 	config.SetWindowDecorated(true)
+	config.SetPausedColor(&core.RGBColor{
+		Red:   100,
+		Green: 0,
+		Blue:  0,
+	})
 	ebiten.SetWindowSize(600, th)
 	ebiten.SetWindowFloating(true)
 

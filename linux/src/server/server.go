@@ -32,6 +32,7 @@ func StartServer(timer *core.Timer, config *core.Config) error {
 			"width":  monitor.Width,
 		})
 	})
+
 	r.Run()
 
 	return nil

@@ -7,7 +7,6 @@ import (
 )
 
 func RegisterOverlayRoutes(config *core.Config, r *gin.RouterGroup) error {
-
 	r.PUT("/overlay/config", func(ctx *gin.Context) {
 		var body binding.DTOSetOverlayConfig
 

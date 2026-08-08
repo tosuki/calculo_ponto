@@ -25,6 +25,15 @@ type Timer struct {
 	IntervalTime time.Duration
 }
 
+func (t *Timer) SetJourney(journey time.Duration) {
+	t.Journey = journey
+}
+
+func (t *Timer) SetStartedAt(timestamp int64) {
+	parsed := time.Unix(timestamp, 0)
+	t.StartedAt = parsed
+}
+
 func (t *Timer) Pause() {
 	if !t.IsPaused {
 		t.IsPaused = true

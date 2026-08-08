@@ -22,3 +22,12 @@ type DTOSetOverlayConfig struct {
 func (d *DTOSetOverlayConfig) Validate() bool {
 	return true
 }
+
+type DTOSetTimerConfig struct {
+	StartedAt *int64 `json:"started_at"`
+	Journey   *int64 `json:"journey"`
+}
+
+func (d *DTOSetTimerConfig) Validate() bool {
+	return true
+}
